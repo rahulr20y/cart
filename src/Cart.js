@@ -32,6 +32,32 @@ class Cart extends React.Component{
         //this.increaseQuantity = this.increaseQuantity.bind(this);
         //this.testing();
     }
+
+
+    handleIncreaseQuantity = (product) => {
+        let {products} = this.state;
+        let index = products.indexOf(product);
+
+        products[index].qty = product.qty + 1;
+
+        this.setState({
+            products : products
+        });
+    }
+    handleDecreaseQuantity = (product) => {
+        let {products} = this.state;
+        let index = products.indexOf(product);
+
+        if(products[index].qty > 0){
+            products[index].qty = product.qty - 1;
+        }
+
+        this.setState({
+            products : products
+        });
+    }
+
+
     render(){
         // const arr = [1, 2, 3, 4, 5];
         const { products } = this.state;
@@ -47,7 +73,9 @@ class Cart extends React.Component{
                     return (
                         <CartItem
                            product={product}
-                           key={product.id} 
+                           key={product.id}
+                           handleIncreaseQuantity={this.handleIncreaseQuantity} 
+                           handleDecreaseQuantity={this.handleDecreaseQuantity}  
                         />
                     );
 
