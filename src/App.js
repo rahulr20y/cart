@@ -70,6 +70,17 @@ class App extends React.Component {
       });
   }
 
+  getCartCount = () => {
+    let {products} = this.state;
+    let count = 0;
+
+    products.forEach( (item) => {
+      count = count + item.qty;
+    })
+
+    return count;
+  }
+
 
   render() {
        
@@ -77,7 +88,7 @@ class App extends React.Component {
       
       return (
         <div className="App">
-          <Navbar />
+          <Navbar count={ this.getCartCount() } />
           <Cart 
             products={products}
             handleIncreaseQuantity={this.handleIncreaseQuantity} 
