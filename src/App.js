@@ -45,23 +45,49 @@ class App extends React.Component {
       let {products} = this.state;
       let index = products.indexOf(product);
 
-      products[index].qty = product.qty + 1;
+      // products[index].qty = product.qty + 1;
 
-      this.setState({
-          products : products
-      });
+      // this.setState({
+      //     products : products
+      // });
+
+      let docRef = this.db.collection('products').doc(product.id);
+      console.log(docRef);
+
+      docRef.update({
+        qty : product.qty + 1
+      }).then( () => {
+        console.log("Updated Successfully")
+      }).catch( (error) => {
+        console.log("Error" , error);
+      })
   }
   handleDecreaseQuantity = (product) => {
       let {products} = this.state;
       let index = products.indexOf(product);
 
-      if(products[index].qty > 0){
-          products[index].qty = product.qty - 1;
-      }
+      // if(products[index].qty > 0){
+      //     products[index].qty = product.qty - 1;
+      // }
 
-      this.setState({
-          products : products
-      });
+      // this.setState({
+      //     products : products
+      // });
+
+      if(product.qty == 0){
+        return;
+      }
+  
+      let docRef = this.db.collection('products').doc(product.id);
+      console.log(docRef);
+  
+      docRef.update({
+        qty : product.qty - 1
+      }).then( () => {
+        console.log("Updated Successfully")
+      }).catch( (error) => {
+        console.log("Error" , error);
+      })
   }
   handleDeleteProduct = (id) => {
       let {products} = this.state;
@@ -100,7 +126,7 @@ class App extends React.Component {
     this.db
     .collection('products')
     .add({
-      img : '',
+      img : 'http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg',
       price : 50000,
       title : 'Laptop',
       qty : 10
