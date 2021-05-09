@@ -2,40 +2,43 @@
 import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 class App extends React.Component {
   
   constructor(){
       super();
       this.state = {
-          products: [
-              {
-                  price : 9999,
-                  title : 'Phone',
-                  qty : 1,
-                  img : "https://images.pexels.com/photos/265658/pexels-photo-265658.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                  id : 1
-              },
-              {
-                  price : 999,
-                  title : 'Watch',
-                  qty : 2,
-                  img : "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                  id: 2
-              },
-              {
-                  price : 50000,
-                  title : 'Laptop',
-                  qty : 1,
-                  img : "https://images.pexels.com/photos/205421/pexels-photo-205421.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                  id : 3
-              }
-          ]
+          products: [],
+          loading: true
       }
-      //this.increaseQuantity = this.increaseQuantity.bind(this);
-      //this.testing();
   }
 
+  componentDidMount(){
+    firebase
+     .firestore()
+     .collection('products')
+     .get()
+     .then((snapshot) => {
+        console.log(snapshot);
+
+        snapshot.docs.map( (doc) => {
+            console.log(doc.data());
+        });
+
+        const products = snapshot.docs.map( (doc) => {
+          let data = doc.data();
+          data['id'] = doc.id;
+          return data;
+        });
+
+        this.setState({
+           products:products,
+           loading: false
+        })
+     })
+  }
 
   handleIncreaseQuantity = (product) => {
       let {products} = this.state;
@@ -94,7 +97,7 @@ class App extends React.Component {
 
   render() {
        
-      const {products} = this.state;
+      const {products, loading} = this.state;
       
       return (
         <div className="App">
@@ -105,7 +108,8 @@ class App extends React.Component {
             handleDecreaseQuantity={this.handleDecreaseQuantity}
             handleDeleteProduct={this.handleDeleteProduct} 
           />
-           <div style={{fontSize:"25px" , padding:"20px"}}>TOTAL PRICE : {this.getCartTotal()}</div>
+          {loading && <h1>Loading Products...</h1>}
+          <div style={{fontSize:"25px" , padding:"20px"}}>TOTAL PRICE : {this.getCartTotal()}</div>
         </div>
       );
   }
